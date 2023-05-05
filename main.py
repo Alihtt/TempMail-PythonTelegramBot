@@ -64,8 +64,9 @@ Subject: {email_subject}
 
     except error.BadRequest:
         pass
-    except tempmail.requests.exceptions.ProxyError:
-        await update.callback_query.edit_message_text(text="Please Try Again", reply_markup=buttons)
+
+    except (tempmail.requests.exceptions.ProxyError, tempmail.requests.exceptions.Timeout):
+        await update.callback_query.edit_message_text(text="Service UnavailableوPlease Try Again Later", reply_markup=buttons)
 
 if __name__ == "__main__":
 

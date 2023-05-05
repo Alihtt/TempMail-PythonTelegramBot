@@ -24,7 +24,7 @@ async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context.user_data["email"] = email
                 await update.callback_query.edit_message_text(text=f"__**Your Temporary E-mail**__ : `{email}`", reply_markup=buttons, parse_mode=constants.ParseMode.MARKDOWN)
             else:
-                await update.callback_query.edit_message_text(text=f"You Need to Generate an email", reply_markup=buttons)
+                await update.callback_query.edit_message_text(text="You Need to Generate an email", reply_markup=buttons)
 
         # elif user have an email
         elif context.user_data:
@@ -64,6 +64,8 @@ Subject: {email_subject}
 
     except error.BadRequest:
         pass
+    except tempmail.requests.exceptions.ProxyError:
+        await update.callback_query.edit_message_text(text="Please Try Again", reply_markup=buttons)
 
 if __name__ == "__main__":
 

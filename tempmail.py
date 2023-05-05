@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 import html2text
 
 
@@ -35,8 +34,3 @@ def refresh(username, domain):
         return [email_id, email_from, email_subject, email_date, email_text, files]
 
     return "No Messages Were Received.."
-
-
-def download(username, domain, email_id, file):
-    attachment_url = f"https://www.1secmail.com/api/v1/?action=download&login={username}&domain={domain}&id={email_id}&file={file}"
-    return attachment_url

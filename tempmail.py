@@ -4,13 +4,13 @@ import html2text
 
 def generate():
     email_addres = requests.get(
-        "https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1").json()[0]
+        "https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1", timeout=6).json()[0]
     return email_addres
 
 
 def refresh(username, domain):
     response = requests.get(
-        f"https://www.1secmail.com/api/v1/?action=getMessages&login={username}&domain={domain}").json()
+        f"https://www.1secmail.com/api/v1/?action=getMessages&login={username}&domain={domain}", timeout=6).json()
 
     # if email have message
     if response:
@@ -20,7 +20,7 @@ def refresh(username, domain):
         email_id = response[0]["id"]
         # get message info
         response_msg = requests.get(
-            f"https://www.1secmail.com/api/v1/?action=readMessage&login={username}&domain={domain}&id={email_id}").json()
+            f"https://www.1secmail.com/api/v1/?action=readMessage&login={username}&domain={domain}&id={email_id}", timeout=6).json()
         email_from = response_msg["from"]
         email_subject = response_msg["subject"]
         email_date = response_msg["date"]

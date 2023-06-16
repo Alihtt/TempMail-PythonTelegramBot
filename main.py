@@ -2,14 +2,13 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, Callbac
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 import tempmail
 import config
-
+import logging
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"""
 Hello {update.effective_user.first_name}
 Welcome to @FakeMaiilRobot.
 """, reply_markup=buttons)
-
 
 async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -65,22 +64,31 @@ Subject: {email_subject}
     except error.BadRequest:
         pass
 
-    except (tempmail.requests.exceptions.ProxyError, tempmail.requests.exceptions.Timeout):
-        await update.callback_query.edit_message_text(text="Service Unavailable Please Try Again Later", reply_markup=buttons)
+    except:
+        await update.callback_query.edit_message_text(text="Service Unavailable,Please Try Again Later", reply_markup=buttons)
 
 if __name__ == "__main__":
+    try:
+        logging.basicConfig(filename='errors.log', level=logging.ERROR,
+                             format='%(asctime)s %(levelname)s: %(message)s')
 
-    buttons = InlineKeyboardMarkup([
-        [InlineKeyboardButton('Generate📥', callback_data='generate')],
-        [InlineKeyboardButton('Refresh🔄', callback_data='refresh'),
-         InlineKeyboardButton('My Email📬', callback_data='my_email')],
-        [InlineKeyboardButton('Close🚫', callback_data='close')]
-    ])
+        buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton('Generate📥', callback_data='generate')],
+            [InlineKeyboardButton('Refresh🔄', callback_data='refresh'),
+             InlineKeyboardButton('My Email📬', callback_data='my_email')],
+            [InlineKeyboardButton('Close🚫', callback_data='close')]
+            ])
 
-    app = ApplicationBuilder().token(config.token).build()
+        app = ApplicationBuilder().token(config.token).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(query_handler))
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CallbackQueryHandler(query_handler))
 
-    print("Bot is Alive")
-    app.run_polling()
+        print("Bot is Alive")
+
+        app.run_polling()
+
+    except Exception as e:
+        logging.error(str(e))
+
+
